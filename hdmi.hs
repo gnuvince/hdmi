@@ -11,10 +11,11 @@ data Hdmi = HdmiOn | HdmiOff
   Commands include extending the display with xrandr, and moving
   sound output to HDMI1.
  -}
--- TODO: Add commands to change pulseaudio output device.
 hdmiCommand :: Hdmi -> [String]
-hdmiCommand HdmiOn  = ["xrandr --output HDMI1 --auto --right-of LVDS1"]
-hdmiCommand HdmiOff = ["xrandr --output HDMI1 --off --right-of LVDS1"]
+hdmiCommand HdmiOn  = ["xrandr --output HDMI1 --auto --right-of LVDS1",
+                       "pactl set-card-profile 0 output:hdmi-stereo"]
+hdmiCommand HdmiOff = ["xrandr --output HDMI1 --off --right-of LVDS1",
+                       "pactl set-card-profile 0 output:analog-stereo"]
 
 {-| Read the command line parameter and return either a Maybe Hdmi
     if "on" or "off" are provided, and Nothing otherwise. -}
@@ -41,6 +42,4 @@ usage = do
 main :: IO ()
 main = do
   hdmiMaybe <- getHdmiFlag `liftM` getArgs
-  maybe usage
-        (runCommands . hdmiCommand)
-        hdmiMaybe
+  maybe usage (runCommands . hdmiCommand) hdmiMaybe
