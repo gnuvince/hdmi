@@ -15,7 +15,7 @@ hdmiCommands :: Hdmi -> [String]
 hdmiCommands HdmiOn  = ["xrandr --output HDMI1 --auto --right-of LVDS1",
                         "pactl set-card-profile 0 output:hdmi-stereo"]
 hdmiCommands HdmiOff = ["xrandr --output HDMI1 --off --right-of LVDS1",
-                        "pactl set-card-profile 0 output:analog-stereo"]
+                        "pactl set-card-profile 0 output:analog-stereo+input"]
 
 {-| Read the command line parameter and return either a Maybe Hdmi
     if "on" or "off" are provided, and Nothing otherwise. -}
